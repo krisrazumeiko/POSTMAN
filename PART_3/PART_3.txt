@@ -1,5 +1,5 @@
-ДЗ_3 Postman
-=====
+PART_3 Postman
+
 
 1) необходимо залогиниться
 POST
@@ -14,7 +14,7 @@ password : str
 ===================
 
 2) http://162.55.220.72:5005/user_info
-req. (RAW JSON)                                                 
+req. (RAW JSON)
 POST
 age: int
 salary: int
@@ -36,91 +36,6 @@ resp.
 2) Проверка структуры json в ответе.
 3) В ответе указаны коэффициенты умножения salary, напишите тесты по проверке правильности результата перемножения на коэффициент.
 4) Достать значение из поля 'u_salary_1.5_year' и передать в поле salary запроса http://162.55.220.72:5005/get_test_user
-
-
-// 2) Проверка структуры json в ответе.
-let jsonData = pm.response.json(); //parse JsonData to json file
-
-        let schema = {
-          "type": "object",
-          "properties": {
-            "person": {
-              "type": "object",
-              "properties": {
-                "u_age": {
-                  "type": "integer"
-                },
-                "u_name": {
-                  "type": "array",
-                  "items": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "integer"
-                    },
-                    {
-                      "type": "integer"
-                    }
-                  ]
-                },
-                "u_salary_1_5_year": {
-                  "type": "integer"
-                }
-              },
-              "required": [
-                "u_age",
-                "u_name",
-                "u_salary_1_5_year"
-              ]
-            },
-            "qa_salary_after_12_months": {
-              "type": "number"
-            },
-            "qa_salary_after_6_months": {
-              "type": "integer"
-            },
-            "start_qa_salary": {
-              "type": "integer"
-            }
-          },
-          "required": [
-            "person",
-            "qa_salary_after_12_months",
-            "qa_salary_after_6_months",
-            "start_qa_salary"
-          ]
-        };
-
-        pm.test('Schema is true', function() {
-          pm.expect(tv4.validate(jsonData, schema)).to.be.true;
-        });
-
-
-        // 3) В ответе указаны коэффициенты умножения salary, напишите тесты по проверке правильности результата перемножения на коэффициент.
-        let start_salary = jsonData.start_qa_salary;
-        let salary_6_m = jsonData.qa_salary_after_6_months;
-        let salary_12_m = jsonData.qa_salary_after_12_months;
-        let salary_1_5_year = jsonData.person.u_salary_1_5_year;
-
-        pm.test("Check the result of multiplying the salary by coefficients", function () {
-            pm.expect(salary_6_m).to.eql(start_salary * 2);
-            pm.expect(salary_12_m).to.eql(start_salary * 2.9);
-            pm.expect(salary_1_5_year).to.eql(start_salary * 4);
-        });
-
-
-        // 4) Достать значение из поля 'u_salary_1.5_year' и передать в поле salary запроса http://162.55.220.72:5005/get_test_user
-        //let salary_1_5_year = jsonData.person.u_salary_1_5_year;
-        pm.environment.set("salary1", salary_1_5_year);
-
-
-        var jsonData = JSON.parse(responseBody);
-        pm.environment.set(“salary”, jsonData.data.salary);
-
-        console.log(jsonData);
-        console.log(jsonData.data.token);
-
 ===================
 
 3) http://162.55.220.72:5005/new_data
@@ -141,80 +56,6 @@ Resp.
 2) Проверка структуры json в ответе.
 3) В ответе указаны коэффициенты умножения salary, напишите тесты по проверке правильности результата перемножения на коэффициент.
 4) проверить, что 2-й элемент массива salary больше 1-го и 0-го
-
-        
-        // 2) Проверка структуры json в ответе.
-        let jsonData = pm.response.json();
-        let schema = {
-          "type": "object",
-          "properties": {
-            "age": {
-              "type": "integer"
-            },
-            "name": {
-              "type": "string"
-            },
-            "salary": {
-              "type": "array",
-              "items": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          "required": [
-            "age",
-            "name",
-            "salary"
-          ]
-        };
-
-        pm.test('Schema is true', function () {
-            pm.expect(tv4.validate(jsonData, schema)).to.be.true;
-        });
-
-
-        // 3) В ответе указаны коэффициенты умножения salary, напишите тесты по проверке правильности результата перемножения на коэффициент.
-        let start_salary = jsonData.salary[0];
-        let salary_x2 = jsonData.salary[1];
-        let salary_x3 = jsonData.salary[2];
-
-        pm.test("Check the result of multiplying the salary by coefficients", function () {
-            pm.expect(start_salary).to.eql(2000);
-            pm.expect(parseInt(salary_x2)).to.eql(start_salary * 2);
-            pm.expect(parseInt(salary_x3)).to.eql(start_salary * 3);
-        });
-
-
-        pm.test("Умножения salary на коэффициент", function () {
-            //var jsonData = pm.response.json();
-            let reqData = request.data;
-            let reqSalary = reqData.salary;
-            pm.expect(jsonData.salary[0]).to.eql(+reqSalary);
-            pm.expect(+jsonData.salary[1]).to.eql(reqSalary * 2);
-            pm.expect(+jsonData.salary[2]).to.eql(reqSalary * 3);
-        });
-
-
-        // 4) проверить, что 2-й элемент массива salary больше 1-го и 0-го
-        let salaryArr = jsonData.salary;
-        //console.log(salaryArr);
-        let n = 1;
-        for(let i = 0; i < n; i++){
-            if(salaryArr[2] > salaryArr[0] && salaryArr[2] > salaryArr[1]){
-            console.log("Salary_x3 more than others");
-            } else {
-                console.log("Salary_x3 less than others!!!")
-            }
-        }
-
 ===================
 
 4) http://162.55.220.72:5005/test_pet_info
@@ -237,48 +78,6 @@ Resp.
 1) Статус код 200
 2) Проверка структуры json в ответе.
 3) В ответе указаны коэффициенты умножения weight, напишите тесты по проверке правильности результата перемножения на коэффициент.
-
-        // 2) Проверка структуры json в ответе.
-        let jsonData = pm.response.json();
-
-        let schema = {
-            "type": "object",
-          "properties": {
-            "age": {
-              "type": "integer"
-            },
-            "daily_food": {
-              "type": "number"
-            },
-            "daily_sleep": {
-              "type": "number"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "age",
-            "daily_food",
-            "daily_sleep",
-            "name"
-          ]
-        };
-
-        pm.test('Schema is true', function () {
-            pm.expect(tv4.validate(jsonData, schema)).to.be.true;
-        });
-
-
-        // 3) В ответе указаны коэффициенты умножения weight, напишите тесты по проверке правильности результата перемножения на коэффициент.
-        let daily_food_weight = jsonData.daily_food;
-        let daily_sleep_weight = jsonData.daily_sleep;
-        let weight_start = pm.environment.get("weight");
-
-        pm.test("Check the result of weight", function () {
-            pm.expect(daily_food_weight).to.eql(weight_start * 0.012);
-            pm.expect(daily_sleep_weight).to.eql(weight_start * 2.5);
-        });
 
 ===================
 
@@ -304,87 +103,68 @@ Resp.
 3) Проверить что занчение поля name = значению переменной name из окружения
 4) Проверить что занчение поля age в ответе соответсвует отправленному в запросе значению поля age
 
-        // 2) Проверка структуры json в ответе.
-        let jsonData = pm.response.json();
+===================
 
-        let schema = {
-            "type": "object",
-          "properties": {
-            "age": {
-              "type": "string"
-            },
-            "family": {
-              "type": "object",
-              "properties": {
-                "children": {
-                  "type": "array",
-                  "items": [
-                    {
-                      "type": "array",
-                      "items": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "integer"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "array",
-                      "items": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "integer"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "u_salary_1_5_year": {
-                  "type": "integer"
-                }
-              },
-              "required": [
-                "children",
-                "u_salary_1_5_year"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "salary": {
-              "type": "integer"
-            }
-          },
-          "required": [
-            "age",
-            "family",
-            "name",
-            "salary"
-          ]
-        };
+6) http://162.55.220.72:5005/currency
+req.
+POST
+auth_token
 
-        pm.test('Schema is true', function () {
-            pm.expect(tv4.validate(jsonData, schema)).to.be.true;
-        });
+Resp. Передаётся список массив объектов.
+[
+{"Cur_Abbreviation": str,
+ "Cur_ID": int,
+ "Cur_Name": str
+}
+…
+{"Cur_Abbreviation": str,
+ "Cur_ID": int,
+ "Cur_Name": str
+}
+]
+
+Тесты:
+1) Можете взять любой объект из присланного списка, используйте js random.
+В объекте возьмите Cur_ID и передать через окружение в следующий запрос.
+
+ ===================
+
+7) http://162.55.220.72:5005/curr_byn
+req.
+POST
+auth_token
+curr_code: int
+
+Resp.
+{
+    "Cur_Abbreviation": str
+    "Cur_ID": int,
+    "Cur_Name": str,
+    "Cur_OfficialRate": float,
+    "Cur_Scale": int,
+    "Date": str
+}
+
+Тесты:
+1) Статус код 200
+2) Проверка структуры json в ответе.
 
 
-        // 3) Проверить что занчение поля name = значению переменной name из окружения
-        let nameEnviroment = pm.environment.get("name");
-        let nameResp = jsonData.name;
+===============
+***
+1) получить список валют
+2) итерировать список валют
+3) в каждой итерации отправлять запрос на сервер для получения курса каждой валюты
+4) если возвращается 500 код, переходим к следующей итреации
+5) если получаем 200 код, проверяем response json на наличие поля "Cur_OfficialRate"
+6) если поле есть, пишем в консоль инфу про фалюту в виде response
+{
+    "Cur_Abbreviation": str
+    "Cur_ID": int,
+    "Cur_Name": str,
+    "Cur_OfficialRate": float,
+    "Cur_Scale": int,
+    "Date": str
+}
+7) переходим к следующей итерации
 
-        pm.test("Check name", function () {
-            pm.expect(nameResp).to.eql(nameEnviroment);
-        });
-
-
-        // 4) Проверить что значение поля age в ответе соответсвует отправленному в запросе значению поля age
-        let reqAge = request.data.age;
-        let respAge = jsonData.age;
-
-        pm.test("Check age", function () {
-            pm.expect(respAge).to.eql(reqAge);
-        });
